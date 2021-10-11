@@ -1,4 +1,4 @@
-import { CognitoUserPoolTriggerEvent, Context } from 'aws-lambda';
+import { UserMigrationTriggerEvent, Context } from 'aws-lambda';
 import { AWSError, CognitoIdentityServiceProvider, ChainableTemporaryCredentials } from 'aws-sdk';
 import { AdminInitiateAuthRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
@@ -74,7 +74,7 @@ async function lookupUser(cognitoISP: CognitoIdentityServiceProvider, username: 
 	}
 }
 
-async function onUserMigrationAuthentication(cognitoISP: CognitoIdentityServiceProvider, event: CognitoUserPoolTriggerEvent) {
+async function onUserMigrationAuthentication(cognitoISP: CognitoIdentityServiceProvider, event: UserMigrationTriggerEvent) {
 	// authenticate the user with your existing user directory service
 	const user = await authenticateUser(cognitoISP, event.userName!, event.request.password!);
 	if (!user) {
@@ -95,7 +95,7 @@ async function onUserMigrationAuthentication(cognitoISP: CognitoIdentityServiceP
 	return event;
 }
 
-async function onUserMigrationForgotPassword(cognitoISP: CognitoIdentityServiceProvider, event: CognitoUserPoolTriggerEvent) {
+async function onUserMigrationForgotPassword(cognitoISP: CognitoIdentityServiceProvider, event: UserMigrationTriggerEvent) {
 	// Lookup the user in your existing user directory service
 	const user = await lookupUser(cognitoISP, event.userName!);
 	if (!user) {
@@ -103,7 +103,7 @@ async function onUserMigrationForgotPassword(cognitoISP: CognitoIdentityServiceP
 	}
 
 	event.response.userAttributes = {
-		// old_username: user.userName,
+		 //old_username: user.userName,
 	    'custom:AIDM': String(user.userAttributes['custom:AIDM']),
 		email: user.userAttributes.email!,
 		email_verified: 'true',
@@ -116,7 +116,7 @@ async function onUserMigrationForgotPassword(cognitoISP: CognitoIdentityServiceP
 	return event;
 }
 
-export const handler = async (event: CognitoUserPoolTriggerEvent, context: Context): Promise<CognitoUserPoolTriggerEvent> => {
+export const handler = async (event: UserMigrationTriggerEvent, context: Context): Promise<UserMigrationTriggerEvent> => {
 	const options: CognitoIdentityServiceProvider.Types.ClientConfiguration = {
 		region: OLD_USER_POOL_REGION,
 	};
@@ -137,6 +137,6 @@ export const handler = async (event: CognitoUserPoolTriggerEvent, context: Conte
 		case 'UserMigration_ForgotPassword':
 			return onUserMigrationForgotPassword(cognitoIdentityServiceProvider, event);
 		default:
-			throw new Error(`Bad triggerSource ${event.triggerSource}`);
+			throw new Error(`Bad triggerSource`);
 	}
 }
