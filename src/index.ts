@@ -1,4 +1,4 @@
-import { UserMigrationTriggerEvent, Context } from 'aws-lambda';
+import { UserMigrationTriggerEvent, UserMigrationAuthenticationTriggerEvent,UserMigrationForgotPasswordTriggerEvent,Context } from 'aws-lambda';
 import { AWSError, CognitoIdentityServiceProvider, ChainableTemporaryCredentials } from 'aws-sdk';
 import { AdminInitiateAuthRequest } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
@@ -74,7 +74,7 @@ async function lookupUser(cognitoISP: CognitoIdentityServiceProvider, username: 
 	}
 }
 
-async function onUserMigrationAuthentication(cognitoISP: CognitoIdentityServiceProvider, event: UserMigrationTriggerEvent) {
+async function onUserMigrationAuthentication(cognitoISP: CognitoIdentityServiceProvider, event: UserMigrationAuthenticationTriggerEvent) {
 	// authenticate the user with your existing user directory service
 	const user = await authenticateUser(cognitoISP, event.userName!, event.request.password!);
 	if (!user) {
@@ -95,7 +95,7 @@ async function onUserMigrationAuthentication(cognitoISP: CognitoIdentityServiceP
 	return event;
 }
 
-async function onUserMigrationForgotPassword(cognitoISP: CognitoIdentityServiceProvider, event: UserMigrationTriggerEvent) {
+async function onUserMigrationForgotPassword(cognitoISP: CognitoIdentityServiceProvider, event: UserMigrationForgotPasswordTriggerEvent) {
 	// Lookup the user in your existing user directory service
 	const user = await lookupUser(cognitoISP, event.userName!);
 	if (!user) {
