@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"description": "AWS Lambda to migrate users from one Cognito user pool to another",
 	"scripts": {
-		"build": "tsc && (cd dist/ && zip -r ../migrate-cognito-user-pool.zip *)"
+		"build": "tsc && (cd dist/)"
 	},
 	"devDependencies": {
 		"typescript": "^3.7.3"

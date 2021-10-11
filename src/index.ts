@@ -83,7 +83,7 @@ async function onUserMigrationAuthentication(cognitoISP: CognitoIdentityServiceP
 
 	event.response.userAttributes = {
 		// old_username: user.userName,
-		// 'custom:tenant': user.userAttributes['custom:tenant'],
+		'custom:AIDM': String(user.userAttributes['custom:AIDM']),
 		email: user.userAttributes.email!,
 		email_verified: 'true',
 		preferred_username: user.userAttributes.preferred_username!,
@@ -104,7 +104,7 @@ async function onUserMigrationForgotPassword(cognitoISP: CognitoIdentityServiceP
 
 	event.response.userAttributes = {
 		// old_username: user.userName,
-		// 'custom:tenant': user.userAttributes['custom:tenant'],
+	    'custom:AIDM': String(user.userAttributes['custom:AIDM']),
 		email: user.userAttributes.email!,
 		email_verified: 'true',
 		preferred_username: user.userAttributes.preferred_username!,
